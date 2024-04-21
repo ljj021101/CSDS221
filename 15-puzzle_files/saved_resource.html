@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/ -->
+<!-- saved from url=(0052)https://jsfiddle.net/HubbleFL/1f2dw4kc/134/embedded/ -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     
@@ -14,9 +14,9 @@
         var height
         var force_height = null
         var slug = "1f2dw4kc"
-        var show_src = "//fiddle.jshell.net/HubbleFL/1f2dw4kc/109/show/light/"
+        var show_src = "//fiddle.jshell.net/HubbleFL/1f2dw4kc/134/show/light/"
         var resize_element_counter = 0
-        var shell_edit_url = "/HubbleFL/1f2dw4kc/109/light/"
+        var shell_edit_url = "/HubbleFL/1f2dw4kc/134/light/"
 
       </script>
 
@@ -32,7 +32,7 @@
     <div id="full-embed">
         <header>
           <h1>
-            <a href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/" target="_blank">
+            <a href="https://jsfiddle.net/HubbleFL/1f2dw4kc/134/" target="_blank">
               <svg width="34" height="40">
       <use xlink:href="//jsfiddle.net/sprite.svg#logo"></use>
     </svg>Edit in JSFiddle
@@ -41,16 +41,16 @@
           <div id="actions">
             <ul class="normalRes">
                 <li class="active">
-                  <a data-trigger-type="js" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#JavaScript">JavaScript</a>
+                  <a data-trigger-type="js" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/134/embedded/#JavaScript">JavaScript</a>
                 </li>
                 <li class="">
-                  <a data-trigger-type="html" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#HTML">HTML</a>
+                  <a data-trigger-type="html" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/134/embedded/#HTML">HTML</a>
                 </li>
                 <li class="">
-                  <a data-trigger-type="css" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#CSS">CSS</a>
+                  <a data-trigger-type="css" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/134/embedded/#CSS">CSS</a>
                 </li>
                 <li class="">
-                  <a data-trigger-type="result" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#Result">Result</a>
+                  <a data-trigger-type="result" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/134/embedded/#Result">Result</a>
                 </li>
             </ul>
             <div class="hl" style="left: 0px; width: 85.3646px;"></div>
@@ -132,8 +132,7 @@
   <span class="hljs-keyword">if</span> (checkWin()) {
     setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
       stopTimer();
-      alert(<span class="hljs-string">`You win！\nSteps: <span class="hljs-subst">${steps}</span>\nTime: <span class="hljs-subst">${formatTime(timeElapsed)}</span>`</span>);
-      resetGame();
+      showModal();
     }, <span class="hljs-number">300</span>);
   }
 }
@@ -216,8 +215,43 @@
     }
   });
 }
+
+<span class="hljs-keyword">var</span> modal = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"win-modal"</span>);
+
+<span class="hljs-keyword">var</span> closeButton = <span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">"close-button"</span>)[<span class="hljs-number">0</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showModal</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"final-steps"</span>).textContent = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"step-counter"</span>).textContent;
+  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"final-time"</span>).textContent = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"timer"</span>).textContent;
+  modal.style.display = <span class="hljs-string">"block"</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">closeModal</span>(<span class="hljs-params"></span>) </span>{
+  modal.style.display = <span class="hljs-string">"none"</span>;
+  resetGame();
+}
+
+closeButton.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  closeModal();
+}
+
+<span class="hljs-built_in">window</span>.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+  <span class="hljs-keyword">if</span> (event.target == modal) {
+    closeModal();
+  }
+}
+
 </pre>
               <pre class="tCont HTML hljs"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"game-wrapper"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"win-modal"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"modal"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"modal-content"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"close-button"</span>&gt;</span><span class="hljs-symbol">&amp;times;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>Congratulations!<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>You win!<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Steps: <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"final-steps"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Time: <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"final-time"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"solution-hint"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"hint-tile"</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"hint-tile"</span>&gt;</span>2<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -282,6 +316,17 @@
   <span class="hljs-attribute">grid-template-columns</span>: <span class="hljs-built_in">repeat</span>(<span class="hljs-number">4</span>, <span class="hljs-number">35px</span>);
   <span class="hljs-attribute">grid-template-rows</span>: <span class="hljs-built_in">repeat</span>(<span class="hljs-number">4</span>, <span class="hljs-number">35px</span>);
   <span class="hljs-attribute">grid-gap</span>: <span class="hljs-number">2px</span>;
+}
+
+<span class="hljs-selector-class">.modal-content</span> <span class="hljs-selector-tag">p</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#555</span>;
+  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">'Arial'</span>, sans-serif;
+}
+
+<span class="hljs-selector-class">.modal-content</span> {
+  <span class="hljs-attribute">position</span>: relative;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">50%</span>;
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(-<span class="hljs-number">50%</span>);
 }
 
 <span class="hljs-selector-id">#game-info</span> {
@@ -371,7 +416,49 @@
   <span class="hljs-attribute">color</span>: <span class="hljs-number">#666</span>;
   <span class="hljs-attribute">font-size</span>: <span class="hljs-number">14px</span>;
 }
-</pre>
+
+<span class="hljs-selector-class">.modal</span> {
+  <span class="hljs-attribute">display</span>: none;
+  <span class="hljs-attribute">position</span>: fixed;
+  <span class="hljs-attribute">z-index</span>: <span class="hljs-number">2</span>;
+  <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;
+  <span class="hljs-attribute">overflow</span>: auto;
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>);
+}
+
+<span class="hljs-selector-class">.modal-content</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fff</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">10%</span> auto;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#888</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">30%</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">5px</span> <span class="hljs-number">15px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.7</span>);
+}
+
+
+<span class="hljs-selector-class">.close-button</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#aaaaaa</span>;
+  <span class="hljs-attribute">float</span>: right;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">28px</span>;
+  <span class="hljs-attribute">font-weight</span>: bold;
+  <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">50px</span>;
+}
+
+<span class="hljs-selector-class">.close-button</span><span class="hljs-selector-pseudo">:hover</span>,
+<span class="hljs-selector-class">.close-button</span><span class="hljs-selector-pseudo">:focus</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#000</span>;
+  <span class="hljs-attribute">text-decoration</span>: none;
+  <span class="hljs-attribute">cursor</span>: pointer;
+}
+
+<span class="hljs-selector-class">.modal-content</span> <span class="hljs-selector-tag">h2</span> {
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#333</span>;
+  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">'Arial'</span>, sans-serif;
+}</pre>
               <div class="tCont result " id="result">
               </div>
         </div>
