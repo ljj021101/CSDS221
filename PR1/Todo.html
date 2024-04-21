@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Manager</title>
+<style>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* 悬浮窗口样式 */
+.modal {
+  position: fixed; /* 固定定位 */
+  z-index: 1; /* 置于顶层 */
+  left: 0;
+  top: 0;
+  width: 100%; /* 遮罩覆盖全屏宽 */
+  height: 100%; /* 遮罩覆盖全屏高 */
+  overflow: auto; /* 如果内容超出屏幕大小，则允许滚动 */
+  background-color: rgba(0,0,0,0.4); /* 半透明遮罩颜色 */
+}
+
+.modal-content {
+  background-color: #fefefe; /* 模态窗口背景颜色 */
+  margin: 0 auto; /* 水平居中 */
+  border: 1px solid #888; /* 边框 */
+  width: 270px; /* 固定宽度 */
+  height: 380px; /* 固定高度 */
+  position: relative; /* 相对定位 */
+  top: 50%; /* 垂直居中 */
+  transform: translateY(-50%); /* 向上偏移自身高度的一半 */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#app {
+  font-family: Arial, sans-serif;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: white;
+  padding: 0px 20px; /* 增加了一些内边距 */
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between; /* 两边对齐 */
+  align-items: center;
+}
+
+.modal-body {
+  padding: 20px;
+  /* 如果需要，可以在这里添加更多样式 */
+}
+
+.input-group {
+  /* 确保输入组包裹错误消息 */
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  width: 165px;
+}
+
+.input-group input {
+  /* 输入框的样式 */
+  margin-bottom: 5px; /* 为错误消息留出空间 */
+}
+
+.input-error {
+  /* 错误消息的样式 */
+  color: red; /* 红色文字 */
+  font-size: 0.8em; /* 字体大小调整 */
+  margin-top: -5px; /* 调整负外边距以更紧凑地显示消息 */
+  margin-bottom: 10px; /* 错误消息和下一个输入框之间的距离 */
+}
+
+.priority-group {
+  display: flex;
+  gap: 10px; /* 控制单选按钮之间的间隙 */
+}
+
+.button-group {
+  position: absolute;
+  right: 5px; /* 根据需要调整，距离模态框右边的距离 */
+  bottom: 5px; /* 根据需要调整，距离模态框底部的距离 */
+}
+
+.btn {
+  padding: 10px 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  /* 如果需要，可以在这里添加更多样式 */
+}
+
+.btn-add {
+  background-color: #28a745;
+  color: white;
+  /* 如果需要，可以在这里添加更多样式 */
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+  /* 如果需要，可以在这里添加更多样式 */
+}
+
+.close {
+  font-size: 1.5em; /* 调整关闭按钮的大小 */
+  cursor: pointer;
+}
+
+.toast {
+  position: fixed;
+  z-index: 10000;
+  right: 20px; /* 从右侧定位 */
+  bottom: 20px; /* 从底部定位 */
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0.9;
+}
+
+.modal-title-symbol {
+  margin-right: 10px; /* 在图标和文本之间添加一些间距 */
+  /* 你可以添加其他样式，如字体大小或颜色等 */
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+<div id="app">
+<!-- 打开模态窗口的按钮 -->
+  <button @click="openAddTaskModal">Add Task</button>
+  <div v-if="showToast" class="toast">{{ toastMessage }}</div>
+
+  <!-- 悬浮窗口 -->
+  <div v-if="showModal" class="modal">
+    <div class="modal-content">
+      <!-- 在这里添加表单元素 -->
+      <!-- 模态框头部 -->
+      <div class="modal-header">
+        <span class="modal-title-symbol" v-html="isUpdating ? '&#x270E;' : '&#x271A;'"></span>
+        <h2>{{ isUpdating ? 'Edit Task' : 'Add Task' }}</h2>
+      </div>
+      <form @submit.prevent="addOrUpdateTask">
+      
+        <div class="input-group" v-if="!isUpdating">
+          <label for="title">Title*</label>
+          <input type="text"
+                 v-model="newTask.title"
+                 placeholder="Title of task"
+                 @input="checkForDuplicateTitle"
+                 required>
+          <div v-if="!newTask.title" class="input-error">Title is Required!</div>
+          <!-- 新增的重名提示消息 -->
+          <div v-if="isTitleDuplicate" class="input-error">A task with this title already exists!</div>
+        </div>
+
+        <div class="input-group">
+        <label for="description">Description*</label>
+          <input type="text" v-model="newTask.description" placeholder="Description of task" required>
+          <!-- 错误提示放到输入框下面 -->
+          <div v-if="!newTask.description" class="input-error">Description is Required!</div>
+        </div>
+
+        <div class="input-group">
+          <label for="deadline">Deadline*</label>
+          <input type="date" v-model="newTask.deadline" id="deadline" required>
+        </div>
+
+        <div class="input-group">
+          <label>Priority</label>
+          <div class="priority-group">
+            <input type="radio" id="low" value="Low" v-model="newTask.priority" required>
+            <label for="low">Low</label>
+
+            <input type="radio" id="medium" value="Med" v-model="newTask.priority" required>
+            <label for="medium">Med</label>
+
+            <input type="radio" id="high" value="High" v-model="newTask.priority" required>
+            <label for="high">High</label>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button v-if="isUpdating" type="submit" class="btn btn-update">UPDATE</button>
+          <button v-else type="submit" class="btn btn-add">ADD</button>
+          <button type="button" class="btn btn-cancel" @click="closeModal">CANCEL</button>
+        </div>
+      </form>
+      <!-- 你之前的表单代码可以放在这里 -->
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Deadline</th>
+        <th>Priority</th>
+        <th>Is Complete</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="task in tasks" :key="task.id">
+        <td>{{ task.title }}</td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.deadline }}</td>
+        <td>{{ task.priority }}</td>
+        <td><input type="checkbox" v-model="task.isComplete"></td>
+        <td>
+          <!-- 只有当task.isComplete为false时，才显示更新按钮 -->
+          <button v-if="!task.isComplete" @click="openUpdateTaskModal(task)">Update</button>
+          <button @click="deleteTask(task.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+new Vue({
+  el: '#app',
+  data: function() {
+    return {
+      showModal: false,
+      isUpdating: false,
+      // Set default priority to "Low" when initializing newTask
+      newTask: { id: null, title: '', description: '', deadline: '', priority: 'Low', isComplete: false },
+      tasks: [],
+      showToast: false,
+      currentTaskId: null, // Used to track the ID of the task being updated
+      isTitleDuplicate: false,
+    };
+  },
+  methods: {
+  
+    openAddTaskModal() {
+      this.isUpdating = false;
+      this.currentTaskId = null;
+      // 每次打开模态框时重置newTask对象，并将优先级设置为"Low"
+      this.newTask = { id: null, title: '', description: '', deadline: '', priority: 'Low', isComplete: false };
+      this.showModal = true;
+  },
+    
+    openUpdateTaskModal(task) {
+      this.isUpdating = true;
+      this.currentTaskId = task.id;
+      this.newTask = { ...task };
+      this.showModal = true;
+    },
+    
+    checkForDuplicateTitle() {
+      // 如果在tasks数组中找到相同的标题，设置isTitleDuplicate为true
+      const duplicate = this.tasks.some(task => task.title === this.newTask.title);
+      this.isTitleDuplicate = duplicate;
+    },
+    
+    addOrUpdateTask() {
+      if (this.isUpdating) {
+        // Update the task
+        this.showSuccessToast('Task updated successfully!');
+        const index = this.tasks.findIndex(task => task.id === this.currentTaskId);
+        if (index !== -1) {
+          this.tasks.splice(index, 1, { ...this.newTask, id: this.currentTaskId });
+        }
+      } else {
+        // Add new task
+        this.checkForDuplicateTitle();
+        if (this.isTitleDuplicate) {
+          // 如果标题重名，中断操作并显示提示
+          return;
+        }
+        this.showSuccessToast('Task added successfully!');
+        const newId = this.tasks.reduce((id, task) => Math.max(id, task.id), 0) + 1;
+        this.tasks.push({ ...this.newTask, id: newId, isComplete: false });
+      }
+      this.closeModal();
+    },
+    
+    closeModal() {
+      this.showModal = false;
+      this.isUpdating = false;
+      this.currentTaskId = null;
+      // 重置 newTask 为初始状态
+      this.newTask = { id: null, title: '', description: '', deadline: '', priority: '', isComplete: false };
+    },
+    
+    deleteTask(taskId) {
+      // 使用 filter 方法创建一个不包含被删除任务的新数组
+      this.tasks = this.tasks.filter(task => task.id !== taskId);
+      this.showSuccessToast('Task deleted successfully!');
+    },
+    
+    showSuccessToast(message) {
+      this.toastMessage = message;
+      this.showToast = true;
+
+      setTimeout(() => {
+        this.showToast = false;
+      }, 3000); // 3秒后自动隐藏toast
+    }
+  }
+});
+
+</script>
+</body>
+</html>

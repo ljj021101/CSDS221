@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Manager</title>
+<style>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 0 auto;
+  border: 1px solid #888;
+  width: 270px;
+  height: 380px;
+  position: relative;  top: 50%;
+  transform: translateY(-50%);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#app {
+  font-family: Arial, sans-serif;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: white;
+  padding: 0px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
+  padding: 20px;
+
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  width: 165px;
+}
+
+.input-group input {
+  margin-bottom: 5px;
+}
+
+.input-error {
+  color: red;
+  font-size: 0.8em;
+  margin-top: -5px;
+  margin-bottom: 10px;}
+
+.priority-group {
+  display: flex;
+  gap: 10px;
+}
+
+.button-group {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+.btn {
+  padding: 10px 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.btn-add {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+
+}
+
+.close {
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.toast {
+  position: fixed;
+  z-index: 10000;
+  right: 20px;
+  bottom: 20px;  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0.9;
+}
+
+.modal-title-symbol {
+  margin-right: 10px;
+
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+<div id="app">
+  <button @click="openAddTaskModal">Add Task</button>
+  <div v-if="showToast" class="toast">{{ toastMessage }}</div>
+
+  <div v-if="showModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title-symbol" v-html="isUpdating ? '&#x270E;' : '&#x271A;'"></span>
+        <h2>{{ isUpdating ? 'Edit Task' : 'Add Task' }}</h2>
+      </div>
+      <form @submit.prevent="addOrUpdateTask">
+      
+        <div class="input-group" v-if="!isUpdating">
+          <label for="title">Title*</label>
+          <input type="text"
+                 v-model="newTask.title"
+                 placeholder="Title of task"
+                 @input="checkForDuplicateTitle"
+                 required>
+          <div v-if="!newTask.title" class="input-error">Title is Required!</div>
+          <div v-if="isTitleDuplicate" class="input-error">A task with this title already exists!</div>
+        </div>
+
+        <div class="input-group">
+        <label for="description">Description*</label>
+          <input type="text" v-model="newTask.description" placeholder="Description of task" required>
+          <div v-if="!newTask.description" class="input-error">Description is Required!</div>
+        </div>
+
+        <div class="input-group">
+          <label for="deadline">Deadline*</label>
+          <input type="date" v-model="newTask.deadline" id="deadline" required>
+        </div>
+
+        <div class="input-group">
+          <label>Priority</label>
+          <div class="priority-group">
+            <input type="radio" id="low" value="Low" v-model="newTask.priority" required>
+            <label for="low">Low</label>
+
+            <input type="radio" id="medium" value="Med" v-model="newTask.priority" required>
+            <label for="medium">Med</label>
+
+            <input type="radio" id="high" value="High" v-model="newTask.priority" required>
+            <label for="high">High</label>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button v-if="isUpdating" type="submit" class="btn btn-update">UPDATE</button>
+          <button v-else type="submit" class="btn btn-add">ADD</button>
+          <button type="button" class="btn btn-cancel" @click="closeModal">CANCEL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Deadline</th>
+        <th>Priority</th>
+        <th>Is Complete</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="task in tasks" :key="task.id">
+        <td>{{ task.title }}</td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.deadline }}</td>
+        <td>{{ task.priority }}</td>
+        <td><input type="checkbox" v-model="task.isComplete"></td>
+        <td>
+          <button v-if="!task.isComplete" @click="openUpdateTaskModal(task)">Update</button>
+          <button @click="deleteTask(task.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+new Vue({
+  el: '#app',
+  data: function() {
+    return {
+      showModal: false,
+      isUpdating: false,
+      // Set default priority to "Low" when initializing newTask
+      newTask: { id: null, title: '', description: '', deadline: '', priority: 'Low', isComplete: false },
+      tasks: [],
+      showToast: false,
+      currentTaskId: null, // Used to track the ID of the task being updated
+      isTitleDuplicate: false,
+    };
+  },
+  methods: {
+  
+    openAddTaskModal() {
+      this.isUpdating = false;
+      this.currentTaskId = null;
+      this.newTask = { id: null, title: '', description: '', deadline: '', priority: 'Low', isComplete: false };
+      this.showModal = true;
+  },
+    
+    openUpdateTaskModal(task) {
+      this.isUpdating = true;
+      this.currentTaskId = task.id;
+      this.newTask = { ...task };
+      this.showModal = true;
+    },
+    
+    checkForDuplicateTitle() {
+      const duplicate = this.tasks.some(task => task.title === this.newTask.title);
+      this.isTitleDuplicate = duplicate;
+    },
+    
+    addOrUpdateTask() {
+      if (this.isUpdating) {
+        // Update the task
+        this.showSuccessToast('Task updated successfully!');
+        const index = this.tasks.findIndex(task => task.id === this.currentTaskId);
+        if (index !== -1) {
+          this.tasks.splice(index, 1, { ...this.newTask, id: this.currentTaskId });
+        }
+      } else {
+        // Add new task
+        this.checkForDuplicateTitle();
+        if (this.isTitleDuplicate) {
+          return;
+        }
+        this.showSuccessToast('Task added successfully!');
+        const newId = this.tasks.reduce((id, task) => Math.max(id, task.id), 0) + 1;
+        this.tasks.push({ ...this.newTask, id: newId, isComplete: false });
+      }
+      this.closeModal();
+    },
+    
+    closeModal() {
+      this.showModal = false;
+      this.isUpdating = false;
+      this.currentTaskId = null;
+      this.newTask = { id: null, title: '', description: '', deadline: '', priority: '', isComplete: false };
+    },
+    
+    deleteTask(taskId) {
+      this.tasks = this.tasks.filter(task => task.id !== taskId);
+      this.showSuccessToast('Task deleted successfully!');
+    },
+    
+    showSuccessToast(message) {
+      this.toastMessage = message;
+      this.showToast = true;
+
+      setTimeout(() => {
+        this.showToast = false;
+      }, 3000);
+    }
+  }
+});
+
+</script>
+</body>
+</html>

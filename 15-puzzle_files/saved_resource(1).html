@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)https://fiddle.jshell.net/_display/?editor_console=true -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title></title>
+  
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script type="text/javascript" src="./dummy.js.download"></script>
+
+    <link rel="stylesheet" type="text/css" href="./result-light.css">
+
+
+  <style id="compiled-css" type="text/css">
+    .hint-tile {
+  all: unset; /* 移除所有默认样式 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d4af37; /* 保持与游戏区瓷砖相同的背景颜色 */
+  color: white;
+  font-size: 10; /* 提示区瓷砖的字体大小缩小 */
+  font-weight: bold;
+  border: solid 2px lightgrey; /* 保持边框样式 */
+  border-radius: 2px; /* 提示区瓷砖的圆角也相应缩小 */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); /* 提示区瓷砖的阴影相应缩小 */
+  width: 30px; /* 缩小尺寸 */
+  height: 30px; /* 缩小尺寸 */
+  transition: background-color 0.2s ease-in-out; /* 保持背景颜色过渡效果 */
+}
+
+/* 空瓷砖样式 */
+.hint-tile.empty-tile {
+  background-color: transparent;
+  border: none;
+}
+
+#game-wrapper {
+  display: flex;
+  align-items: start;
+}
+
+#solution-hint {
+  margin-right: 20px; /* 在提示和游戏板之间添加一些间距 */
+  width: 160px; /* 或根据您的页面布局调整 */
+  height: 160px; /* 或根据您的页面布局调整 */
+  display: grid;
+  grid-template-columns: repeat(4, 35px); /* 创建一个4x4的网格，每个瓷砖20px */
+  grid-template-rows: repeat(4, 35px);
+  grid-gap: 2px; /* 网格线间距 */
+}
+
+#game-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#game-info p {
+  margin: 5px 0;
+  font-size: 18px;
+}
+
+
+
+#puzzle-container {
+  width: 400px;
+  height: 400px;
+  margin: 30px auto; /* Center the puzzle container */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 5px;
+  background-color: #f4f4f4; /* Light grey background */
+  padding: 5px; /* Add some padding around the grid */
+  border-radius: 10px; /* Round corners */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #7ca5b8;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  border: solid 2px white; /* Add border to the tile */
+  border-radius: 5px; /* Round corners of tiles */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Shadow for each tile */
+  transition: background-color 0.2s ease-in-out; /* Transition effect for tile background */
+}
+
+.tile:not(.empty):hover {
+  background-color: #557c92; /* Slightly darker tile background on hover */
+}
+
+.tile.correct:not(.empty) {
+  background-color: #d4af37; /* 设置正确位置的瓷砖颜色为金色 */
+}
+
+.tile.correct:not(.empty):hover {
+  background-color: #b38f00; /* 设置金色悬停效果 */
+}
+
+.empty {
+  background-color: transparent; /* Make empty tile transparent */
+  cursor: default;
+  border: none; /* No border for empty tile */
+}
+
+#start-button {
+  margin-top: 20px; /* Add some space above the start button */
+  margin-bottom: 10px;
+  padding: 10px 20px; /* Make the button larger and more clickable */
+  font-size: 18px; /* Increase font size */
+  border-radius: 5px; /* Round corners */
+  background-color: #7ca5b8; /* Match the color of the tiles */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#start-button:hover {
+  background-color: #669db3; /* Slightly darker button background on hover */
+}
+
+#best-scores {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  text-align: right;
+}
+
+#best-scores p {
+  margin: 0;
+  padding: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+    <script src="./stringify.js.download" charset="utf-8"></script>
+    <script>
+      const customConsole = (w) => {
+        const pushToConsole = (payload, type) => {
+          w.parent.postMessage({
+            console: {
+              payload: stringify(payload),
+              type:    type
+            }
+          }, "*")
+        }
+
+        w.onerror = (message, url, line, column) => {
+          // the line needs to correspond with the editor panel
+          // unfortunately this number needs to be altered every time this view is changed
+          line = line - 70
+          if (line < 0){
+            pushToConsole(message, "error")
+          } else {
+            pushToConsole(`[${line}:${column}] ${message}`, "error")
+          }
+        }
+
+        let console = (function(systemConsole){
+          return {
+            log: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "log")
+              systemConsole.log.apply(this, args)
+            },
+            info: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "info")
+              systemConsole.info.apply(this, args)
+            },
+            warn: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "warn")
+              systemConsole.warn.apply(this, args)
+            },
+            error: function(){
+              let args = Array.from(arguments)
+              pushToConsole(args, "error")
+              systemConsole.error.apply(this, args)
+            },
+            system: function(arg){
+              pushToConsole(arg, "system")
+            },
+            clear: function(){
+              systemConsole.clear.apply(this, {})
+            },
+            time: function(){
+              let args = Array.from(arguments)
+              systemConsole.time.apply(this, args)
+            },
+            assert: function(assertion, label){
+              if (!assertion){
+                pushToConsole(label, "log")
+              }
+
+              let args = Array.from(arguments)
+              systemConsole.assert.apply(this, args)
+            }
+          }
+        }(window.console))
+
+        window.console = { ...window.console, ...console }
+
+        console.system("Running fiddle")
+      }
+
+      if (window.parent){
+        customConsole(window)
+      }
+    </script>
+</head>
+<body>
+    <div id="game-wrapper">
+  <div id="solution-hint">
+    <div class="hint-tile">1</div>
+    <div class="hint-tile">2</div>
+    <div class="hint-tile">3</div>
+    <div class="hint-tile">4</div>
+    <div class="hint-tile">5</div>
+    <div class="hint-tile">6</div>
+    <div class="hint-tile">7</div>
+    <div class="hint-tile">8</div>
+    <div class="hint-tile">9</div>
+    <div class="hint-tile">10</div>
+    <div class="hint-tile">11</div>
+    <div class="hint-tile">12</div>
+    <div class="hint-tile">13</div>
+    <div class="hint-tile">14</div>
+    <div class="hint-tile">15</div>
+  </div>
+  <div id="game-info">
+    <p>Step: <span id="step-counter">26</span></p>
+    <p>Time: <span id="timer">00:34</span></p>
+  </div>
+  <div id="puzzle-container"><div id="tile-1" class="tile correct">1</div><div id="tile-2" class="tile correct">2</div><div id="tile-3" class="tile">8</div><div id="tile-4" class="tile">10</div><div id="tile-5" class="tile">14</div><div id="tile-6" class="tile empty"></div><div id="tile-7" class="tile correct">7</div><div id="tile-8" class="tile">9</div><div id="tile-9" class="tile">12</div><div id="tile-10" class="tile">3</div><div id="tile-11" class="tile">5</div><div id="tile-12" class="tile">13</div><div id="tile-13" class="tile">11</div><div id="tile-14" class="tile">4</div><div id="tile-15" class="tile correct">15</div><div class="tile" id="tile-16">6</div></div>
+  <button id="start-button">Start Game</button>
+</div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+document.getElementById('start-button').addEventListener('click', function() {
+  initializeBoard();
+  shuffleTiles();
+  updateTileColors(); // 确保正确的瓷砖一开始就是金色的
+});
+
+function initializeBoard() {
+  const puzzleContainer = document.getElementById('puzzle-container');
+  puzzleContainer.innerHTML = ''; // 清空之前的拼图
+
+  for (let i = 1; i <= 15; i++) {
+    const tile = document.createElement('div');
+    tile.id = `tile-${i}`;
+    tile.className = 'tile';
+    tile.textContent = i.toString();
+    puzzleContainer.appendChild(tile);
+  }
+  // 添加空白拼图块
+  const emptyTile = document.createElement('div');
+  emptyTile.className = 'tile empty'; // 这里添加了empty类
+  emptyTile.id = 'tile-16';
+  puzzleContainer.appendChild(emptyTile);
+}
+
+function shuffleTiles() {
+  const shuffledNumbers = [...Array(15).keys()]
+    .map((x) => x + 1)
+    .sort(() => Math.random() - 0.5);
+
+  // 确保我们得到一个有解的拼图
+  let inversionCount = 0;
+  for (let i = 0; i < 15; i++) {
+    for (let j = i + 1; j < 15; j++) {
+      if (shuffledNumbers[i] > shuffledNumbers[j]) inversionCount++;
+    }
+  }
+  // 如果逆序数是奇数，就通过交换最后两个块来变成偶数，保证可解
+  if (inversionCount % 2 !== 0) {
+    [shuffledNumbers[13], shuffledNumbers[14]] = [shuffledNumbers[14], shuffledNumbers[13]];
+  }
+
+  const tiles = Array.from(document.getElementsByClassName('tile'));
+  tiles.forEach((tile, index) => {
+    if (index < 15) {
+      tile.textContent = shuffledNumbers[index].toString();
+    } else {
+      tile.textContent = '';
+    }
+  });
+  addTileClickEvents();
+  updateTileColors();
+}
+
+document.getElementById('start-button').addEventListener('click', shuffleTiles);
+
+function moveTile(tile) {
+  // 使用 class 来查找空瓷砖
+  const emptyTile = document.querySelector('.empty');
+  const tileIndex = parseInt(tile.id.split('-')[1]) - 1;
+  const emptyIndex = parseInt(emptyTile.id.split('-')[1]) - 1;
+
+  const row = Math.floor(tileIndex / 4);
+  const col = tileIndex % 4;
+  const emptyRow = Math.floor(emptyIndex / 4);
+  const emptyCol = emptyIndex % 4;
+
+  // 检查是否相邻
+  if ((row === emptyRow && Math.abs(col - emptyCol) === 1) || (col === emptyCol && Math.abs(row - emptyRow) === 1)) {
+    // 交换内容
+    updateStepCounter()
+    emptyTile.textContent = tile.textContent;
+    tile.textContent = '';
+    // 更新类以反映空瓷砖和非空瓷砖
+    emptyTile.classList.remove('empty');
+    tile.classList.add('empty');
+    updateTileColors();
+  }
+  addTileClickEvents();
+  if (checkWin()) {
+    setTimeout(function() {
+      stopTimer(); // 停止计时器
+      alert(`You win！\nSteps: ${steps}\nTime: ${formatTime(timeElapsed)}`);
+      resetGame(); // 重置游戏
+    }, 300);
+  }
+}
+
+function addTileClickEvents() {
+  const tiles = Array.from(document.getElementsByClassName('tile'));
+  tiles.forEach((tile) => {
+    // 移除现有的点击事件监听器以避免重复
+    tile.removeEventListener('click', tileClickHandler);
+    // 为不是空的瓷砖添加点击事件监听器
+    if (!tile.classList.contains('empty')) {
+      tile.addEventListener('click', tileClickHandler);
+    }
+  });
+}
+
+function checkWin() {
+  const tiles = Array.from(document.getElementsByClassName('tile'));
+  for (let i = 0; i < tiles.length - 1; i++) {
+    // 因为我们从 1 开始编号，所以需要检查textContent是否与索引+1相等
+    if (tiles[i].textContent !== (i + 1).toString()) {
+      return false; // 如果任何瓷砖不在它应该在的位置，则游戏尚未胜利
+    }
+  }
+  return true; // 所有瓷砖都在正确的位置
+}
+
+// 定义一个独立的函数来处理点击事件，这样它可以在移除事件监听器时被引用
+function tileClickHandler() {
+  moveTile(this); // "this" 引用的是被点击的瓷砖
+}
+
+// 添加事件监听器到开始游戏按钮，初始化游戏板，并添加点击事件到拼图块
+document.getElementById('start-button').addEventListener('click', function() {
+  initializeBoard();
+  shuffleTiles();
+  addTileClickEvents();
+});
+
+//Timer and StepCounter
+let timerInterval;
+
+function startTimer() {
+  clearInterval(timerInterval); // 重置计时器
+  timerInterval = setInterval(function() {
+    timeElapsed += 1;
+    document.getElementById('timer').textContent = formatTime(timeElapsed);
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+}
+
+function formatTime(time) {
+  let minutes = Math.floor(time / 60);
+  let seconds = time % 60;
+  minutes = minutes.toString().padStart(2, '0');
+  seconds = seconds.toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+}
+
+function updateStepCounter() {
+  document.getElementById('step-counter').textContent = ++steps;
+}
+
+function resetGame() {
+  steps = 0;
+  timeElapsed = 0;
+  shuffleTiles();
+  document.getElementById('step-counter').textContent = '0';
+  document.getElementById('timer').textContent = '00:00';
+  startTimer(); // 开始计时
+}
+
+document.getElementById('start-button').addEventListener('click', function() {
+  initializeBoard();
+  shuffleTiles();
+  resetGame(); // 重置步数和时间
+});
+
+function updateTileColors() {
+  const tiles = Array.from(document.getElementsByClassName('tile'));
+  tiles.forEach((tile, index) => {
+    if (!tile.classList.contains('empty')) {
+      // 计算瓷砖的正确数字。这里假设最后一个瓷砖是空的。
+      const correctNumber = index + 1;
+      // 检查瓷砖上的数字是否正确
+      if (tile.textContent == correctNumber.toString()) {
+        tile.classList.add('correct');
+      } else {
+        tile.classList.remove('correct');
+      }
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: ""
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+    <script>
+      let allLines = []
+
+      window.addEventListener("message", (message) => {
+        if (message.data.console){
+          let insert = document.querySelector("#insert")
+          allLines.push(message.data.console.payload)
+          insert.innerHTML = allLines.join(";\r")
+
+          let result = eval.call(null, message.data.console.payload)
+          if (result !== undefined){
+            console.log(result)
+          }
+        }
+      })
+    </script>
+
+
+
+</body></html>
