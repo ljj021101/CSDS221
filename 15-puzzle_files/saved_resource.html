@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0051)https://jsfiddle.net/HubbleFL/1f2dw4kc/97/embedded/ -->
+<!-- saved from url=(0052)https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/ -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     
@@ -14,9 +14,9 @@
         var height
         var force_height = null
         var slug = "1f2dw4kc"
-        var show_src = "//fiddle.jshell.net/HubbleFL/1f2dw4kc/97/show/light/"
+        var show_src = "//fiddle.jshell.net/HubbleFL/1f2dw4kc/109/show/light/"
         var resize_element_counter = 0
-        var shell_edit_url = "/HubbleFL/1f2dw4kc/97/light/"
+        var shell_edit_url = "/HubbleFL/1f2dw4kc/109/light/"
 
       </script>
 
@@ -32,7 +32,7 @@
     <div id="full-embed">
         <header>
           <h1>
-            <a href="https://jsfiddle.net/HubbleFL/1f2dw4kc/97/" target="_blank">
+            <a href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/" target="_blank">
               <svg width="34" height="40">
       <use xlink:href="//jsfiddle.net/sprite.svg#logo"></use>
     </svg>Edit in JSFiddle
@@ -41,16 +41,16 @@
           <div id="actions">
             <ul class="normalRes">
                 <li class="active">
-                  <a data-trigger-type="js" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/97/embedded/#JavaScript">JavaScript</a>
+                  <a data-trigger-type="js" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#JavaScript">JavaScript</a>
                 </li>
                 <li class="">
-                  <a data-trigger-type="html" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/97/embedded/#HTML">HTML</a>
+                  <a data-trigger-type="html" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#HTML">HTML</a>
                 </li>
                 <li class="">
-                  <a data-trigger-type="css" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/97/embedded/#CSS">CSS</a>
+                  <a data-trigger-type="css" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#CSS">CSS</a>
                 </li>
                 <li class="">
-                  <a data-trigger-type="result" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/97/embedded/#Result">Result</a>
+                  <a data-trigger-type="result" href="https://jsfiddle.net/HubbleFL/1f2dw4kc/109/embedded/#Result">Result</a>
                 </li>
             </ul>
             <div class="hl" style="left: 0px; width: 85.3646px;"></div>
@@ -61,12 +61,12 @@
               <pre class="tCont JavaScript active hljs"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'start-button'</span>).addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   initializeBoard();
   shuffleTiles();
-  updateTileColors(); <span class="hljs-comment">// 确保正确的瓷砖一开始就是金色的</span>
+  updateTileColors();
 });
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">initializeBoard</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> puzzleContainer = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'puzzle-container'</span>);
-  puzzleContainer.innerHTML = <span class="hljs-string">''</span>; <span class="hljs-comment">// 清空之前的拼图</span>
+  puzzleContainer.innerHTML = <span class="hljs-string">''</span>;
 
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">15</span>; i++) {
     <span class="hljs-keyword">const</span> tile = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
@@ -75,9 +75,8 @@
     tile.textContent = i.toString();
     puzzleContainer.appendChild(tile);
   }
-  <span class="hljs-comment">// 添加空白拼图块</span>
   <span class="hljs-keyword">const</span> emptyTile = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
-  emptyTile.className = <span class="hljs-string">'tile empty'</span>; <span class="hljs-comment">// 这里添加了empty类</span>
+  emptyTile.className = <span class="hljs-string">'tile empty'</span>;
   emptyTile.id = <span class="hljs-string">'tile-16'</span>;
   puzzleContainer.appendChild(emptyTile);
 }
@@ -87,14 +86,12 @@
     .map(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> x + <span class="hljs-number">1</span>)
     .sort(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Math</span>.random() - <span class="hljs-number">0.5</span>);
 
-  <span class="hljs-comment">// 确保我们得到一个有解的拼图</span>
   <span class="hljs-keyword">let</span> inversionCount = <span class="hljs-number">0</span>;
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">15</span>; i++) {
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = i + <span class="hljs-number">1</span>; j &lt; <span class="hljs-number">15</span>; j++) {
       <span class="hljs-keyword">if</span> (shuffledNumbers[i] &gt; shuffledNumbers[j]) inversionCount++;
     }
   }
-  <span class="hljs-comment">// 如果逆序数是奇数，就通过交换最后两个块来变成偶数，保证可解</span>
   <span class="hljs-keyword">if</span> (inversionCount % <span class="hljs-number">2</span> !== <span class="hljs-number">0</span>) {
     [shuffledNumbers[<span class="hljs-number">13</span>], shuffledNumbers[<span class="hljs-number">14</span>]] = [shuffledNumbers[<span class="hljs-number">14</span>], shuffledNumbers[<span class="hljs-number">13</span>]];
   }
@@ -114,7 +111,6 @@
 <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'start-button'</span>).addEventListener(<span class="hljs-string">'click'</span>, shuffleTiles);
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">moveTile</span>(<span class="hljs-params">tile</span>) </span>{
-  <span class="hljs-comment">// 使用 class 来查找空瓷砖</span>
   <span class="hljs-keyword">const</span> emptyTile = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'.empty'</span>);
   <span class="hljs-keyword">const</span> tileIndex = <span class="hljs-built_in">parseInt</span>(tile.id.split(<span class="hljs-string">'-'</span>)[<span class="hljs-number">1</span>]) - <span class="hljs-number">1</span>;
   <span class="hljs-keyword">const</span> emptyIndex = <span class="hljs-built_in">parseInt</span>(emptyTile.id.split(<span class="hljs-string">'-'</span>)[<span class="hljs-number">1</span>]) - <span class="hljs-number">1</span>;
@@ -124,13 +120,10 @@
   <span class="hljs-keyword">const</span> emptyRow = <span class="hljs-built_in">Math</span>.floor(emptyIndex / <span class="hljs-number">4</span>);
   <span class="hljs-keyword">const</span> emptyCol = emptyIndex % <span class="hljs-number">4</span>;
 
-  <span class="hljs-comment">// 检查是否相邻</span>
   <span class="hljs-keyword">if</span> ((row === emptyRow &amp;&amp; <span class="hljs-built_in">Math</span>.abs(col - emptyCol) === <span class="hljs-number">1</span>) || (col === emptyCol &amp;&amp; <span class="hljs-built_in">Math</span>.abs(row - emptyRow) === <span class="hljs-number">1</span>)) {
-    <span class="hljs-comment">// 交换内容</span>
     updateStepCounter()
     emptyTile.textContent = tile.textContent;
     tile.textContent = <span class="hljs-string">''</span>;
-    <span class="hljs-comment">// 更新类以反映空瓷砖和非空瓷砖</span>
     emptyTile.classList.remove(<span class="hljs-string">'empty'</span>);
     tile.classList.add(<span class="hljs-string">'empty'</span>);
     updateTileColors();
@@ -138,9 +131,9 @@
   addTileClickEvents();
   <span class="hljs-keyword">if</span> (checkWin()) {
     setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-      stopTimer(); <span class="hljs-comment">// 停止计时器</span>
+      stopTimer();
       alert(<span class="hljs-string">`You win！\nSteps: <span class="hljs-subst">${steps}</span>\nTime: <span class="hljs-subst">${formatTime(timeElapsed)}</span>`</span>);
-      resetGame(); <span class="hljs-comment">// 重置游戏</span>
+      resetGame();
     }, <span class="hljs-number">300</span>);
   }
 }
@@ -148,9 +141,7 @@
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addTileClickEvents</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> tiles = <span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">'tile'</span>));
   tiles.forEach(<span class="hljs-function">(<span class="hljs-params">tile</span>) =&gt;</span> {
-    <span class="hljs-comment">// 移除现有的点击事件监听器以避免重复</span>
     tile.removeEventListener(<span class="hljs-string">'click'</span>, tileClickHandler);
-    <span class="hljs-comment">// 为不是空的瓷砖添加点击事件监听器</span>
     <span class="hljs-keyword">if</span> (!tile.classList.contains(<span class="hljs-string">'empty'</span>)) {
       tile.addEventListener(<span class="hljs-string">'click'</span>, tileClickHandler);
     }
@@ -160,31 +151,21 @@
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">checkWin</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> tiles = <span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">'tile'</span>));
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; tiles.length - <span class="hljs-number">1</span>; i++) {
-    <span class="hljs-comment">// 因为我们从 1 开始编号，所以需要检查textContent是否与索引+1相等</span>
     <span class="hljs-keyword">if</span> (tiles[i].textContent !== (i + <span class="hljs-number">1</span>).toString()) {
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; <span class="hljs-comment">// 如果任何瓷砖不在它应该在的位置，则游戏尚未胜利</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
     }
   }
-  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>; <span class="hljs-comment">// 所有瓷砖都在正确的位置</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
 }
 
-<span class="hljs-comment">// 定义一个独立的函数来处理点击事件，这样它可以在移除事件监听器时被引用</span>
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tileClickHandler</span>(<span class="hljs-params"></span>) </span>{
-  moveTile(<span class="hljs-keyword">this</span>); <span class="hljs-comment">// "this" 引用的是被点击的瓷砖</span>
+  moveTile(<span class="hljs-keyword">this</span>);
 }
 
-<span class="hljs-comment">// 添加事件监听器到开始游戏按钮，初始化游戏板，并添加点击事件到拼图块</span>
-<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'start-button'</span>).addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
-  initializeBoard();
-  shuffleTiles();
-  addTileClickEvents();
-});
-
-<span class="hljs-comment">//Timer and StepCounter</span>
 <span class="hljs-keyword">let</span> timerInterval;
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">startTimer</span>(<span class="hljs-params"></span>) </span>{
-  clearInterval(timerInterval); <span class="hljs-comment">// 重置计时器</span>
+  clearInterval(timerInterval);
   timerInterval = setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     timeElapsed += <span class="hljs-number">1</span>;
     <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'timer'</span>).textContent = formatTime(timeElapsed);
@@ -213,22 +194,20 @@
   shuffleTiles();
   <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'step-counter'</span>).textContent = <span class="hljs-string">'0'</span>;
   <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'timer'</span>).textContent = <span class="hljs-string">'00:00'</span>;
-  startTimer(); <span class="hljs-comment">// 开始计时</span>
+  startTimer();
 }
 
 <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'start-button'</span>).addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
   initializeBoard();
   shuffleTiles();
-  resetGame(); <span class="hljs-comment">// 重置步数和时间</span>
+  resetGame();
 });
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateTileColors</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> tiles = <span class="hljs-built_in">Array</span>.from(<span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">'tile'</span>));
   tiles.forEach(<span class="hljs-function">(<span class="hljs-params">tile, index</span>) =&gt;</span> {
     <span class="hljs-keyword">if</span> (!tile.classList.contains(<span class="hljs-string">'empty'</span>)) {
-      <span class="hljs-comment">// 计算瓷砖的正确数字。这里假设最后一个瓷砖是空的。</span>
       <span class="hljs-keyword">const</span> correctNumber = index + <span class="hljs-number">1</span>;
-      <span class="hljs-comment">// 检查瓷砖上的数字是否正确</span>
       <span class="hljs-keyword">if</span> (tile.textContent == correctNumber.toString()) {
         tile.classList.add(<span class="hljs-string">'correct'</span>);
       } <span class="hljs-keyword">else</span> {
@@ -237,12 +216,6 @@
     }
   });
 }
-
-
-
-
-
-
 </pre>
               <pre class="tCont HTML hljs"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"game-wrapper"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"solution-hint"</span>&gt;</span>
@@ -273,41 +246,42 @@
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 </pre>
               <pre class="tCont CSS hljs"><span class="hljs-selector-class">.hint-tile</span> {
-  <span class="hljs-attribute">all</span>: unset; <span class="hljs-comment">/* 移除所有默认样式 */</span>
+  <span class="hljs-attribute">user-select</span>: none;
+  <span class="hljs-attribute">all</span>: unset;
   <span class="hljs-attribute">display</span>: flex;
   <span class="hljs-attribute">align-items</span>: center;
   <span class="hljs-attribute">justify-content</span>: center;
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#d4af37</span>; <span class="hljs-comment">/* 保持与游戏区瓷砖相同的背景颜色 */</span>
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#d4af37</span>;
   <span class="hljs-attribute">color</span>: white;
-  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">10</span>; <span class="hljs-comment">/* 提示区瓷砖的字体大小缩小 */</span>
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">10</span>;
   <span class="hljs-attribute">font-weight</span>: bold;
-  <span class="hljs-attribute">border</span>: solid <span class="hljs-number">2px</span> lightgrey; <span class="hljs-comment">/* 保持边框样式 */</span>
-  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">2px</span>; <span class="hljs-comment">/* 提示区瓷砖的圆角也相应缩小 */</span>
-  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>); <span class="hljs-comment">/* 提示区瓷砖的阴影相应缩小 */</span>
-  <span class="hljs-attribute">width</span>: <span class="hljs-number">30px</span>; <span class="hljs-comment">/* 缩小尺寸 */</span>
-  <span class="hljs-attribute">height</span>: <span class="hljs-number">30px</span>; <span class="hljs-comment">/* 缩小尺寸 */</span>
-  <span class="hljs-attribute">transition</span>: background-color <span class="hljs-number">0.2s</span> ease-in-out; <span class="hljs-comment">/* 保持背景颜色过渡效果 */</span>
+  <span class="hljs-attribute">border</span>: solid <span class="hljs-number">2px</span> lightgrey;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">2px</span>;
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">2px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>);
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">30px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">30px</span>;
+  <span class="hljs-attribute">transition</span>: background-color <span class="hljs-number">0.2s</span> ease-in-out;
 }
 
-<span class="hljs-comment">/* 空瓷砖样式 */</span>
 <span class="hljs-selector-class">.hint-tile</span><span class="hljs-selector-class">.empty-tile</span> {
   <span class="hljs-attribute">background-color</span>: transparent;
   <span class="hljs-attribute">border</span>: none;
 }
 
 <span class="hljs-selector-id">#game-wrapper</span> {
+  <span class="hljs-attribute">user-select</span>: none;
   <span class="hljs-attribute">display</span>: flex;
   <span class="hljs-attribute">align-items</span>: start;
 }
 
 <span class="hljs-selector-id">#solution-hint</span> {
-  <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">20px</span>; <span class="hljs-comment">/* 在提示和游戏板之间添加一些间距 */</span>
-  <span class="hljs-attribute">width</span>: <span class="hljs-number">160px</span>; <span class="hljs-comment">/* 或根据您的页面布局调整 */</span>
-  <span class="hljs-attribute">height</span>: <span class="hljs-number">160px</span>; <span class="hljs-comment">/* 或根据您的页面布局调整 */</span>
+  <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">160px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">160px</span>;
   <span class="hljs-attribute">display</span>: grid;
-  <span class="hljs-attribute">grid-template-columns</span>: <span class="hljs-built_in">repeat</span>(<span class="hljs-number">4</span>, <span class="hljs-number">35px</span>); <span class="hljs-comment">/* 创建一个4x4的网格，每个瓷砖20px */</span>
+  <span class="hljs-attribute">grid-template-columns</span>: <span class="hljs-built_in">repeat</span>(<span class="hljs-number">4</span>, <span class="hljs-number">35px</span>);
   <span class="hljs-attribute">grid-template-rows</span>: <span class="hljs-built_in">repeat</span>(<span class="hljs-number">4</span>, <span class="hljs-number">35px</span>);
-  <span class="hljs-attribute">grid-gap</span>: <span class="hljs-number">2px</span>; <span class="hljs-comment">/* 网格线间距 */</span>
+  <span class="hljs-attribute">grid-gap</span>: <span class="hljs-number">2px</span>;
 }
 
 <span class="hljs-selector-id">#game-info</span> {
@@ -320,22 +294,21 @@
   <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
 }
 
-
-
 <span class="hljs-selector-id">#puzzle-container</span> {
   <span class="hljs-attribute">width</span>: <span class="hljs-number">400px</span>;
   <span class="hljs-attribute">height</span>: <span class="hljs-number">400px</span>;
-  <span class="hljs-attribute">margin</span>: <span class="hljs-number">30px</span> auto; <span class="hljs-comment">/* Center the puzzle container */</span>
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">30px</span> auto;
   <span class="hljs-attribute">display</span>: grid;
   <span class="hljs-attribute">grid-template-columns</span>: <span class="hljs-built_in">repeat</span>(<span class="hljs-number">4</span>, <span class="hljs-number">1</span>fr);
   <span class="hljs-attribute">grid-gap</span>: <span class="hljs-number">5px</span>;
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#f4f4f4</span>; <span class="hljs-comment">/* Light grey background */</span>
-  <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span>; <span class="hljs-comment">/* Add some padding around the grid */</span>
-  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">10px</span>; <span class="hljs-comment">/* Round corners */</span>
-  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">10px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>); <span class="hljs-comment">/* Subtle shadow */</span>
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#f4f4f4</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">5px</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">10px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.1</span>);
 }
 
 <span class="hljs-selector-class">.tile</span> {
+  <span class="hljs-attribute">user-select</span>: none;
   <span class="hljs-attribute">display</span>: flex;
   <span class="hljs-attribute">align-items</span>: center;
   <span class="hljs-attribute">justify-content</span>: center;
@@ -344,37 +317,37 @@
   <span class="hljs-attribute">font-size</span>: <span class="hljs-number">24px</span>;
   <span class="hljs-attribute">font-weight</span>: bold;
   <span class="hljs-attribute">cursor</span>: pointer;
-  <span class="hljs-attribute">border</span>: solid <span class="hljs-number">2px</span> white; <span class="hljs-comment">/* Add border to the tile */</span>
-  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>; <span class="hljs-comment">/* Round corners of tiles */</span>
-  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">5px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>); <span class="hljs-comment">/* Shadow for each tile */</span>
-  <span class="hljs-attribute">transition</span>: background-color <span class="hljs-number">0.2s</span> ease-in-out; <span class="hljs-comment">/* Transition effect for tile background */</span>
+  <span class="hljs-attribute">border</span>: solid <span class="hljs-number">2px</span> white;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>;
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">5px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>);
+  <span class="hljs-attribute">transition</span>: background-color <span class="hljs-number">0.2s</span> ease-in-out;
 }
 
 <span class="hljs-selector-class">.tile</span><span class="hljs-selector-pseudo">:not(.empty)</span><span class="hljs-selector-pseudo">:hover</span> {
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#557c92</span>; <span class="hljs-comment">/* Slightly darker tile background on hover */</span>
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#557c92</span>;
 }
 
 <span class="hljs-selector-class">.tile</span><span class="hljs-selector-class">.correct</span><span class="hljs-selector-pseudo">:not(.empty)</span> {
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#d4af37</span>; <span class="hljs-comment">/* 设置正确位置的瓷砖颜色为金色 */</span>
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#d4af37</span>;
 }
 
 <span class="hljs-selector-class">.tile</span><span class="hljs-selector-class">.correct</span><span class="hljs-selector-pseudo">:not(.empty)</span><span class="hljs-selector-pseudo">:hover</span> {
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#b38f00</span>; <span class="hljs-comment">/* 设置金色悬停效果 */</span>
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#b38f00</span>;
 }
 
 <span class="hljs-selector-class">.empty</span> {
-  <span class="hljs-attribute">background-color</span>: transparent; <span class="hljs-comment">/* Make empty tile transparent */</span>
+  <span class="hljs-attribute">background-color</span>: transparent;
   <span class="hljs-attribute">cursor</span>: default;
-  <span class="hljs-attribute">border</span>: none; <span class="hljs-comment">/* No border for empty tile */</span>
+  <span class="hljs-attribute">border</span>: none;
 }
 
 <span class="hljs-selector-id">#start-button</span> {
-  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">20px</span>; <span class="hljs-comment">/* Add some space above the start button */</span>
+  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">20px</span>;
   <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">10px</span>;
-  <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span> <span class="hljs-number">20px</span>; <span class="hljs-comment">/* Make the button larger and more clickable */</span>
-  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>; <span class="hljs-comment">/* Increase font size */</span>
-  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>; <span class="hljs-comment">/* Round corners */</span>
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#7ca5b8</span>; <span class="hljs-comment">/* Match the color of the tiles */</span>
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">10px</span> <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">5px</span>;
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#7ca5b8</span>;
   <span class="hljs-attribute">color</span>: white;
   <span class="hljs-attribute">border</span>: none;
   <span class="hljs-attribute">cursor</span>: pointer;
@@ -382,7 +355,7 @@
 }
 
 <span class="hljs-selector-id">#start-button</span><span class="hljs-selector-pseudo">:hover</span> {
-  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#669db3</span>; <span class="hljs-comment">/* Slightly darker button background on hover */</span>
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#669db3</span>;
 }
 
 <span class="hljs-selector-id">#best-scores</span> {
